@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="ti4nx-Qor1ZzseUpfBv2uCQTu4eDJN5oa3sRB0CTFh8" />
+  <meta name="baidu-site-verification" content="Q4hNaeC1yF" />
+  
+  <title>OpenCV系列(三)：Mat的相关操作 | Skyoung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="OpenCV系列(三)：Mat的相关操作">
+<meta name="og:url" content="http://blog.skyoung.org/2014/03/26/OpenCV(III)-How-to-use-Mat/">
+<meta name="og:image">
+<meta name="og:site_name" content="Skyoung">
+<meta name="og:description" content="Mat类是OpenCV最基本的一个数据类型，涉及Mat的相关操作比较繁多，上一篇博客结尾处有介绍Mat的构造方法和获取元素的方法，这里将详细讲解一些其他的操作。
+矩阵的基本操作
+OpenCV提供了矩阵常用的一些操作包括矩阵的相加，相乘，逐元素相乘，逐元素相除，求逆等。要意识到Scalar类型是矩阵Mat的元素，而一个实数可以看成是Scalar的特例，即注意矩阵的多通道问题。设为A，B为Mat类型，">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/toc.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <!-- analytics -->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-40237820-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  <!-- mathjax -->
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Skyoung</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">The more you study, the more you will find yourself ignorant.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+	<a class="main-nav-link" href="http://www.skyoung.org" title="About" target="_blank" rel="external">About</a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://blog.skyoung.org"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-OpenCV(III)-How-to-use-Mat" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/03/26/OpenCV(III)-How-to-use-Mat/" class="article-date">
+  <time datetime="2014-03-25T16:00:00.000Z" itemprop="datePublished">Mar 26 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/OpenCV/">OpenCV</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      OpenCV系列(三)：Mat的相关操作
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+	
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#矩阵的基本操作"><span class="toc-text">矩阵的基本操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mat提供的常用成员函数"><span class="toc-text">Mat提供的常用成员函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+		</div>
+		
+
+        <p>Mat类是OpenCV最基本的一个数据类型，涉及Mat的相关操作比较繁多，<a href="http://blog.skyoung.org/opencv/opencv%E7%B3%BB%E5%88%97-%E4%BA%8C-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">上一篇博客</a>结尾处有介绍Mat的构造方法和获取元素的方法，这里将详细讲解一些其他的操作。</p>
+<h3 id="矩阵的基本操作">矩阵的基本操作</h3>
+<p>OpenCV提供了矩阵常用的一些操作包括矩阵的相加，相乘，逐元素相乘，逐元素相除，求逆等。要意识到Scalar类型是矩阵Mat的元素，而一个实数可以看成是Scalar的特例，即注意矩阵的多通道问题。设为A，B为Mat类型，s是Scalar类型，a是一个实数。</p>
+<ul>
+<li><strong>矩阵加减：</strong> A+B，A-B，A+s，A-s，s+A，s-A,-A.</li>
+<li><strong>矩阵乘以实数：</strong> A*a，a*A</li>
+<li><strong>逐元素乘除：</strong> A.mul(B)，A/B，a/A</li>
+<li><strong>矩阵倒置：</strong> A.t()</li>
+<li><strong>矩阵的逆：</strong> A.inv()</li>
+<li><strong>矩阵比较：</strong> A comp B，A comp a，a comp A。这里comp包括 &gt;， &gt;=，==，!=，&lt;=，&lt;。得出的结果是一个单通道8位的矩阵，元素的值为255或0。</li>
+<li><strong>矩阵位操作：</strong> A logic B， A logic s，s logic A。这里logic包括：&amp;，|，^</li>
+<li><strong>逐元素最大最小值：</strong> min(A,B)，min(A,a)，max(A,B)，max(A,a)。</li>
+<li><strong>矩阵的绝对值：</strong> abs(A)</li>
+<li><strong>向量的差乘和内积：</strong> A.cross(B)，A.dot(B);</li>
+</ul>
+<p>关于Mat的操作，如果返回结果的话一定是Mat或者Saclar类型。矩阵相乘时，数据类型必须至少是float型才可以，否则会报错。</p>
+<a id="more"></a>
+
+<h3 id="mat提供的常用成员函数">Mat提供的常用成员函数</h3>
+<ol style="list-style-type: decimal">
+<li><p><strong>赋值操作符’=’</strong><br /> 除了普通的矩阵赋值外，如果一个Scalar赋值给一个Mat,则表示把Mat的所有元素赋值为这个Scalar值。</p></li>
+<li><p><strong>矩阵的取行列及对角线操作</strong><br /> A.row(i)，A.col(j)这些操作返回矩阵A的第i行和第j列。A.rowRange(m,n)和A.colRange(m,n)分别取的是A的第m行到第n行（包括m行，不包括n行）和A的第m列到第n列（包括m列，不包括n列）。这里需要注意一个问题,对于 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="literal">A</span>.row(i) = <span class="literal">A</span>.row(j)
+</pre></td></tr></table></figure> 这一操作，并不能把第j行复制到第i行，因为A.row()返回的只是矩阵的头，以上操作仅仅相当于两个指针的操作，所指内存其实是没有发生变化的。如果想把第j行复制到第i行，可以 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="literal">A</span>.row(j).copyTo(<span class="literal">A</span>(i))
+</pre></td></tr></table></figure> 当右边的矩阵发生操作后，是可以赋值的，比如 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="literal">A</span>.row(i) = <span class="literal">A</span>.row(j)*<span class="literal">a</span>
+<span class="literal">A</span>.row(i) = <span class="literal">A</span>.row(j) + Scalar(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>)<span class="comment">;</span>
+</pre></td></tr></table></figure> A.diag(i)取的是矩阵的对角线，这里i=0代表最中间的对角线，i=1是偏右上一行的对角线，i=-1是左下一行的对角线，例如: <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="attribute">Mat A </span>=<span class="string"> (Mat_&lt;float&gt;(3,3)&lt;&lt; 1,9,3,
+                            7,5,0,
+                            7,3,9);</span>
+</pre></td></tr></table></figure> A.diag(0)取得是{1,5,9}，A.diag(1)取得是{9,0}，A.diag(-1)取得是{7,3}。</p></li>
+<li><p><strong>复制函数</strong> <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="literal">A</span>.clone()//返回<span class="literal">A</span>的拷贝。
+<span class="literal">A</span>.copyTo(B)//执行把<span class="literal">A</span>拷贝到B矩阵中。
+<span class="literal">A</span>.copyTo(B,mask)//进拷贝mask对应的部分
+</pre></td></tr></table></figure></p></li>
+<li><p><strong>转换矩阵元素的数据类型</strong> <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre><span class="literal">A</span>.converTo(B,tpye,scale)//把<span class="literal">A</span>的类型转换为type并且按照scale缩放<span class="literal">A</span>到B矩阵中
+assignTo(<span class="literal">A</span>,type)//更改<span class="literal">A</span>的元素数据类型
+</pre></td></tr></table></figure></p></li>
+<li><p><strong>设定矩阵的值</strong> <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="literal">A</span>.setTo(s)//把<span class="literal">A</span>中所有的值赋值为s
+</pre></td></tr></table></figure></p></li>
+<li><p><strong>更改矩阵的通道数和行数</strong> A.reshape()改变通道数，A.resize()改变行数。其中A.reshape()这个操作不改变ros<em>cols</em>channels的个数，仅仅相当于重构这些元素，例如： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="stl_container"><span class="built_in">vector</span>&lt;Point&gt;</span> vec;<span class="comment">//vec是N个Point</span>
+Mat pointMat = Mat(vec); <span class="comment">//pointMat是一个三通道的N×1的矩阵</span>
+pointMat.reshape(<span class="number">1</span>)<span class="comment">//pointMat变为一个单通道N×3的矩阵</span>
+</pre></td></tr></table></figure> 更改矩阵的行数如下 <figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="literal">A</span>.resize(sz) //<span class="literal">A</span>变为sz行
+</pre></td></tr></table></figure></p></li>
+<li><p><strong>locateROI和adjustROI</strong><br />这两个函数主要是对submatrix的操作，即通过A.row(),A(Range(i,j),Range::all())等操作获得的submatrix在原始矩阵中位置。例如： <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre>Mat A = (Mat_&lt;<span class="keyword">float</span>&gt;(<span class="number">3</span>,<span class="number">3</span>)&lt;&lt; <span class="number">1</span>,<span class="number">9</span>,<span class="number">3</span>,
+                            <span class="number">7</span>,<span class="number">5</span>,<span class="number">0</span>,
+                            <span class="number">7</span>,<span class="number">3</span>,<span class="number">9</span>);
+Mat B = A(Range(<span class="number">0</span>,<span class="number">2</span>),Range(<span class="number">1</span>,<span class="number">3</span>));<span class="comment">//B变为 {9,3,</span>
+                                 <span class="comment">//      5,0}</span>
+Size sz;
+Point p1;
+B.locateROI(sz, p1);
+<span class="built_in">cout</span>&lt;&lt;sz&lt;&lt;<span class="string">" "</span>&lt;&lt;p1&lt;&lt;endl;  <span class="comment">//sz是原矩阵的大小3×3,p1是B在A中位置(1,0)</span>
+B.adjustROI(<span class="number">0</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>); <span class="comment">//把B向下平移1行，最后得出B为{9,3,</span>
+                      <span class="comment">//                        5,0，</span>
+                      <span class="comment">//	                     3,9}			</span>
+<span class="built_in">cout</span>&lt;&lt;B&lt;&lt;endl;
+</pre></td></tr></table></figure></p></li>
+<li><p><strong>Mat的各项属性</strong> <figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="code"><pre>A.total() <span class="comment">//元素的个数</span>
+A.elemSize() <span class="comment">//元素的大小，如果是8UC3的话，返回3*sizeof(uchar)</span>
+A.elemSize1() <span class="comment">//如果是8UC3的话，返回sizeof(uchar)</span>
+A.type() <span class="comment">//元素的数据类型</span>
+A.<span class="built_in">depth</span>()<span class="comment">//元素的位数</span>
+A.channels()<span class="comment">//矩阵的通道数</span>
+A.step1() <span class="comment">//矩阵的每一行元素的个数，A.step/A.elemSize1</span>
+A.size() <span class="comment">//矩阵的尺寸</span>
+<span class="comment">//注意以下是成员变量不是成员函数</span>
+A.<span class="built_in">step</span> <span class="comment">//矩阵的一行的字节数</span>
+A.rows <span class="comment">//矩阵的行数，即高</span>
+A.cols <span class="comment">//矩阵的列数，即宽</span>
+</pre></td></tr></table></figure></p></li>
+</ol>
+<h3 id="总结">总结</h3>
+<p>Mat提供了关于矩阵的一些基本操作，这对图像的操作打下了坚实的基础，更多复杂的算法都是基于这些操作实现的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.skyoung.org/2014/03/26/OpenCV(III)-How-to-use-Mat/" data-id="jk20xo2i3etq5wlz" class="article-share-link">Share</a>
+      
+        <a href="http://blog.skyoung.org/2014/03/26/OpenCV(III)-How-to-use-Mat/#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mat/">Mat</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenCV/">OpenCV</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/04/01/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">如何在CodeBlocks和Qt Creator开发环境下使用OpenCV（Ubuntu12.04）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Computer Vision/">Computer Vision</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/How to/">How to</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OpenCV/">OpenCV</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TexMacs/">TexMacs</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tips/">Tips</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Basic Sturcture/" style="font-size: 10.00px;">Basic Sturcture</a><a href="/tags/Benchmark/" style="font-size: 10.00px;">Benchmark</a><a href="/tags/Boost/" style="font-size: 10.00px;">Boost</a><a href="/tags/CodeBlocks/" style="font-size: 10.00px;">CodeBlocks</a><a href="/tags/Connected Component Labeling/" style="font-size: 10.00px;">Connected Component Labeling</a><a href="/tags/Eigen/" style="font-size: 10.00px;">Eigen</a><a href="/tags/Hough Transform/" style="font-size: 10.00px;">Hough Transform</a><a href="/tags/Jekyll/" style="font-size: 10.00px;">Jekyll</a><a href="/tags/Mat/" style="font-size: 10.00px;">Mat</a><a href="/tags/Online Visual Tracking/" style="font-size: 10.00px;">Online Visual Tracking</a><a href="/tags/OpenCV/" style="font-size: 20.00px;">OpenCV</a><a href="/tags/Qt Creator/" style="font-size: 10.00px;">Qt Creator</a><a href="/tags/TexMacs/" style="font-size: 15.00px;">TexMacs</a><a href="/tags/Ubuntu/" style="font-size: 10.00px;">Ubuntu</a><a href="/tags/Union find/" style="font-size: 10.00px;">Union find</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/kramdown/" style="font-size: 10.00px;">kramdown</a><a href="/tags/libconfig/" style="font-size: 10.00px;">libconfig</a><a href="/tags/ruhoh/" style="font-size: 10.00px;">ruhoh</a><a href="/tags/均匀分布/" style="font-size: 10.00px;">均匀分布</a><a href="/tags/随机数/" style="font-size: 10.00px;">随机数</a><a href="/tags/高斯分布/" style="font-size: 10.00px;">高斯分布</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/04">April 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">March 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02">February 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01">January 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09">September 2013</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/08">August 2013</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/05">May 2013</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/04">April 2013</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/04/01/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/26/OpenCV(III)-How-to-use-Mat/">OpenCV系列(三)：Mat的相关操作</a>
+          </li>
+        
+          <li>
+            <a href="/2014/03/06/how-to-use-QtCreator-and-Codeblocks-with-OpenCV/">如何在CodeBlocks和Qt Creator开发环境下使用OpenCV（Ubuntu12.04）</a>
+          </li>
+        
+          <li>
+            <a href="/2014/02/28/OpenCV(II)-basic-structure-of-opencv/">OpenCV系列(二)：基本数据结构</a>
+          </li>
+        
+          <li>
+            <a href="/2014/01/10/OpenCV(I)-introduction/">OpenCV系列(一)：简介</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+ <div class="widget-wrap">
+    <h3 class="widget-title">Links</h3>
+	<ul class="widget">
+	
+		<li><a href="http://docs.opencv.org/" title="OpenCV documentation" target="_blank"]);">OpenCV Documentation</a></li>
+	
+		<li><a href="http://www.skyoung.org" title="My Presonal Website" target="_blank"]);">My Presonal Website</a></li>
+	
+	</ul>
+</div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Skyoung<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'skyoungsblog';
+  
+  var disqus_url = 'http://blog.skyoung.org/2014/03/26/OpenCV(III)-How-to-use-Mat/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+
+
+  </div>
+</body>
+</html>
